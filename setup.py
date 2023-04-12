@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
 required_packages = [
+    "lxml",
     "numba",
     "numpy",
     "pandas",
     "scipy",
     "scikit-learn",
     "pyteomics",
-    "lxml"
 ]
 
 setup(
