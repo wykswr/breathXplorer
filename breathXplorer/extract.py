@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Sequence
+from typing import Sequence, List
 
 import pandas as pd
 
@@ -28,7 +28,7 @@ def find_feature(ms: Path, line: bool, quantity: float, method: str, n_peak=1) -
 
 
 # merge all the result files of single tasks in the target folder
-def merge_result(tbs: Sequence[pd.DataFrame], names: list[str]) -> pd.DataFrame:
+def merge_result(tbs: Sequence[pd.DataFrame], names: List[str]) -> pd.DataFrame:
     """
     Merge the feature tables of multiple mzML files.
     :param tbs:  Feature tables
