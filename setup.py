@@ -1,14 +1,7 @@
 from setuptools import setup, find_packages
 
-required_packages = [
-    "lxml",
-    "numba",
-    "numpy",
-    "pandas",
-    "scipy",
-    "scikit-learn",
-    "pyteomics",
-]
+with open("requirement.txt") as f:
+    required_packages = f.read().splitlines()
 
 setup(
     name="breathXplorer",
@@ -30,5 +23,6 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
 )
