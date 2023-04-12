@@ -15,7 +15,7 @@ def cal_one(ms: Path, line: bool, quantity: float, method: str, n_peak=1) -> pd.
     :param ms:  Path of the mzML file.
     :param line:  Whether to use line mode.
     :param quantity: control the quality of peak
-    :param method:  Peak picking method
+    :param method:  The method used to find peaks ('Topological' or 'Gaussian').
     :param n_peak:  Number of peaks to be picked
     :return:  Feature table
     """

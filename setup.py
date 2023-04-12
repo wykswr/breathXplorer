@@ -13,7 +13,8 @@ setup(
     description="A short description of your package",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/wykswr/breathXplorer-lite",
+    url="https://github.com/wykswr/breathXplorer",
+    license="MIT",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

@@ -1,2 +1,9 @@
 # breathXplorer
-An advanced instrument for breathomics examination
+BreathXplorer is a tool to do peak picking and feature extraction on breath data.
+
+## Installation
+
+`pip install breathXplorer`
+
+## Usage
+
