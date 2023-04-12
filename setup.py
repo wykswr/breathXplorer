@@ -1,7 +1,13 @@
 from setuptools import setup, find_packages
 
-with open("./requirements.txt") as f:
-    required_packages = f.read().splitlines()
+required_packages = [
+    "numba",
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "pyteomics"
+]
 
 setup(
     name="breathXplorer",
@@ -10,7 +16,7 @@ setup(
     install_requires=required_packages,
     author="wykswr",
     author_email="bifocal.above.0y@icloud.com",
-    description="A short description of your package",
+    description="A tool to do peak picking and feature extraction on breath data",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/wykswr/breathXplorer",
