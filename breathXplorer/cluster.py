@@ -6,21 +6,7 @@ from sklearn.cluster import DBSCAN
 
 
 @njit
-def enough_values(arr: np.ndarray, tolerance: float) -> bool:
-    """
-    Check if the portion of zeros in the array is less than the given tolerance.
-
-    :param arr: Input array.
-    :param tolerance: Tolerance value.
-    :return: True if the condition is satisfied, False otherwise.
-    """
-    if arr.size == 0:
-        return False
-    return arr.nonzero()[0].size / arr.size >= tolerance
-
-
-@njit
-def drop_zero_near(arr: np.ndarray, target: float, mz: np.ndarray) -> np.ndarray:
+def __drop_zero_near(arr: np.ndarray, target: float, mz: np.ndarray) -> np.ndarray:
     """
     Calculate the average of each column's nonzero element in a 2D array.
 

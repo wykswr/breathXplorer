@@ -33,7 +33,7 @@ def time_with_peak(times: np.ndarray, values: np.ndarray, method: str, n_peak=1)
     return at_peak, total_time
 
 
-def lin_interp(x: np.ndarray, y: np.ndarray, i: int, cut_y: float) -> float:
+def __lin_interp(x: np.ndarray, y: np.ndarray, i: int, cut_y: float) -> float:
     """
     Linearly interpolates the x value corresponding to a given y value (cut_y) between two points in the x-y arrays.
 
@@ -46,7 +46,7 @@ def lin_interp(x: np.ndarray, y: np.ndarray, i: int, cut_y: float) -> float:
     return x[i] + (x[i + 1] - x[i]) * ((cut_y - y[i]) / (y[i + 1] - y[i]))
 
 
-def find_one_range(x: np.ndarray, y: np.ndarray, idx: int) -> tuple:
+def __find_one_range(x: np.ndarray, y: np.ndarray, idx: int) -> tuple:
     """
     Finds the range around a peak, determined by a specified index (idx).
 
@@ -67,10 +67,10 @@ def find_one_range(x: np.ndarray, y: np.ndarray, idx: int) -> tuple:
             after = i
             break
         before = i
-    return lin_interp(x, y, before, cut_y), lin_interp(x, y, after, cut_y), y[idx]
+    return __lin_interp(x, y, before, cut_y), __lin_interp(x, y, after, cut_y), y[idx]
 
 
-def find_all_range(x: np.ndarray, y: np.ndarray) -> list:
+def __find_all_range(x: np.ndarray, y: np.ndarray) -> list:
     """
     Finds the ranges around all peaks in the x-y data.
 
@@ -81,10 +81,10 @@ def find_all_range(x: np.ndarray, y: np.ndarray) -> list:
     peaks = signal.argrelmax(y)[0]
     dy = y - min(y)
     peaks = peaks[dy[peaks] > max(dy) * .2]  # can influence effect of finding range
-    return [find_one_range(x, y, lb) for lb in peaks]
+    return [__find_one_range(x, y, lb) for lb in peaks]
 
 
-def is_in(a: tuple, b: tuple) -> bool:
+def __is_in(a: tuple, b: tuple) -> bool:
     """
     Determines whether two ranges overlap.
 
@@ -95,7 +95,7 @@ def is_in(a: tuple, b: tuple) -> bool:
     return (a[0] <= b[0] and a[1] >= b[1]) or (a[0] >= b[0] and a[1] <= b[1])
 
 
-def merge_ranges(ori_range: list) -> list:
+def __merge_ranges(ori_range: list) -> list:
     """
     Merges overlapping ranges in the input list.
 
@@ -106,7 +106,7 @@ def merge_ranges(ori_range: list) -> list:
     for r in ori_range:
         merged = False
         for i, existing_range in enumerate(merged_ranges):
-            if is_in(r, existing_range):
+            if __is_in(r, existing_range):
                 merged_ranges[i] = (
                     min(r[0], existing_range[0]), max(r[1], existing_range[1]), max(r[2], existing_range[2]))
                 merged = True
@@ -116,7 +116,7 @@ def merge_ranges(ori_range: list) -> list:
     if len(merged_ranges) == len(ori_range):
         return merged_ranges
     else:
-        return merge_ranges(merged_ranges)
+        return __merge_ranges(merged_ranges)
 
 
 def find_peak(x: np.ndarray, y: np.ndarray) -> list:
@@ -130,8 +130,8 @@ def find_peak(x: np.ndarray, y: np.ndarray) -> list:
     f = interpolate.interp1d(x, y, kind='cubic')
     n_x = np.union1d(np.linspace(np.min(x), np.max(x), max(1000, len(x))), x)  # can influence effect of finding range
     n_y = f(n_x)
-    ori_range = find_all_range(n_x, n_y)
-    merged_ranges = merge_ranges(ori_range)
+    ori_range = __find_all_range(n_x, n_y)
+    merged_ranges = __merge_ranges(ori_range)
     return merged_ranges
 
 
