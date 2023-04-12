@@ -9,7 +9,7 @@ from .score import score
 
 
 # a single task
-def cal_one(ms: Path, line: bool, quantity: float, method: str, n_peak=1) -> pd.DataFrame:
+def find_feature(ms: Path, line: bool, quantity: float, method: str, n_peak=1) -> pd.DataFrame:
     """
     Calculate the feature table of a single mzML file.
     :param ms:  Path of the mzML file.
@@ -28,7 +28,7 @@ def cal_one(ms: Path, line: bool, quantity: float, method: str, n_peak=1) -> pd.
 
 
 # merge all the result files of single tasks in the target folder
-def merge_result(tbs: Sequence[pd.DataFrame], names: Sequence[str]) -> pd.DataFrame:
+def merge_result(tbs: Sequence[pd.DataFrame], names: list[str]) -> pd.DataFrame:
     """
     Merge the feature tables of multiple mzML files.
     :param tbs:  Feature tables

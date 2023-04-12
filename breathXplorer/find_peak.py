@@ -1,8 +1,8 @@
 from typing import Tuple
 
 import numpy as np
+from scipy import interpolate
 from scipy import signal
-from scipy.interpolate import interpolate
 from sklearn.mixture import GaussianMixture
 
 

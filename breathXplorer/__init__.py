@@ -1,1 +1,1 @@
-from .extract import cal_one, merge_result
+from .extract import find_feature, merge_result

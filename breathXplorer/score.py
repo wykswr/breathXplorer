@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.interpolate import interpolate
+from scipy import interpolate
 
 
 def cal_auc(x: np.ndarray, y: np.ndarray) -> float:
