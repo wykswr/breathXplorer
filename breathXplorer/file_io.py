@@ -110,8 +110,8 @@ def cluster_ms(ms: str, line: bool, dense: float, method: str, n_peak=1) -> dict
     return {'time': times, "intensities": dict(zip(new_mz, records)), 'tic': tic, 'peak_time': total_time}
 
 
-def gen_csv(scanned_file: dict, new_inf: List[Tuple]) -> pd.DataFrame:
-    """Generate the result csv.
+def gen_df(scanned_file: dict, new_inf: List[Tuple]) -> pd.DataFrame:
+    """Generate the Dataframe.
     :param scanned_file: Dictionary read from scan_file
     :param new_inf: New information to append, such as class, mean m/z, correlation with CO2, etc.
                 [tuple1(name1, dc1), tuple2(name2, dc2<key: m/z>), ...]
