@@ -1,9 +1,10 @@
 from functools import reduce
 from typing import Sequence
+
 import numpy as np
 import pandas as pd
-from scipy.interpolate import interp1d
 from numba import njit
+from scipy.interpolate import interp1d
 
 
 def cal_auc(x: np.ndarray, y: np.ndarray) -> float:
@@ -35,11 +36,13 @@ def score(scanned: dict, factor=1.0) -> dict:
 @njit
 def __make_zero(x: np.ndarray) -> np.ndarray:
     """
-    Make negative values in a numpy array 0.
+    Make negative float values in a numpy array 0.
     :param x: A numpy array.
     :return: A numpy array with negative values 0.
     """
-    x[x < 0] = 0
+    for i in range(len(x)):
+        if x[i] < 0:
+            x[i] = 0
     return x
 
 
@@ -56,7 +59,7 @@ def interpolate_time(tb: pd.DataFrame, time: np.ndarray) -> pd.DataFrame:
     original_time = tb.columns.values.astype(float)
     mat = [
         __make_zero(
-            interp1d(original_time, original_int, kind='cubic', bounds_error=False, fill_value='extrapolate')(time))
+            interp1d(original_time, original_int, kind='linear', bounds_error=False, fill_value='extrapolate')(time))
         for original_int in tb.values]
     tb = pd.DataFrame(mat, index=mz, columns=time)
     tb['intensity'] = intensity
