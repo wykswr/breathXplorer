@@ -5,12 +5,12 @@ with open("requirement.txt") as f:
 
 setup(
     name="breathXplorer",
-    version="0.1.3",
+    version="0.1.4",
     packages=find_packages(),
     install_requires=required_packages,
     author="wykswr",
     author_email="bifocal.above.0y@icloud.com",
-    description="A tool to do peak picking and feature extraction on breath data",
+    description="A toolkit for breath metabolomics analysis",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/wykswr/breathXplorer",

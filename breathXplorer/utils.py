@@ -1,9 +1,9 @@
 from functools import reduce
 from typing import Sequence
-
 import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
+from numba import njit
 
 
 def cal_auc(x: np.ndarray, y: np.ndarray) -> float:
@@ -31,6 +31,18 @@ def score(scanned: dict, factor=1.0) -> dict:
     return dict(zip(mzs, [cal_auc(times, v) / factor for v in scanned['intensities'].values()]))
 
 
+# make negative in  np.ndarray 0
+@njit
+def __make_zero(x: np.ndarray) -> np.ndarray:
+    """
+    Make negative values in a numpy array 0.
+    :param x: A numpy array.
+    :return: A numpy array with negative values 0.
+    """
+    x[x < 0] = 0
+    return x
+
+
 def interpolate_time(tb: pd.DataFrame, time: np.ndarray) -> pd.DataFrame:
     """
     Interpolate the intensities at given time points.
@@ -42,8 +54,10 @@ def interpolate_time(tb: pd.DataFrame, time: np.ndarray) -> pd.DataFrame:
     tb = tb.iloc[:, 1:]
     mz = tb.index
     original_time = tb.columns.values.astype(float)
-    mat = [interp1d(original_time, original_int, kind='cubic', bounds_error=False, fill_value='extrapolate')(time)
-           for original_int in tb.values]
+    mat = [
+        __make_zero(
+            interp1d(original_time, original_int, kind='cubic', bounds_error=False, fill_value='extrapolate')(time))
+        for original_int in tb.values]
     tb = pd.DataFrame(mat, index=mz, columns=time)
     tb['intensity'] = intensity
     # make intensity the first column

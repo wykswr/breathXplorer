@@ -23,4 +23,4 @@ def test_time_align(sample):
     tb3 = tb.copy()
     tb3.columns = ["intensity"] + list(tb.columns[1:].values - 0.002)
     tbs = time_align([tb, tb2, tb3])
-    assert abs(tbs[0].shape[0] - 284) < 5
+    assert (tbs[0].columns[1:].values - tbs[1].columns[1:].values).sum() < 0.001
