@@ -4,12 +4,13 @@ from typing import Sequence, List, Union
 import pandas as pd
 
 from .cluster import cluster_merge
+from .container import FeatureSet, Sample
 from .file_io import cluster_ms, gen_df
 from .utils import score, time_union, interpolate_time
 
 
 # a single task
-def find_feature(ms: Union[Path, str], line: bool, quantity: float, method: str, n_peak: int = 1) -> pd.DataFrame:
+def find_feature(ms: Union[Path, str], line: bool, quantity: float, method: str, n_peak: int = 1) -> FeatureSet:
     """
     Calculate the feature table of a single mzML file.
     :param ms:  Path of the mzML file.
@@ -25,23 +26,23 @@ def find_feature(ms: Union[Path, str], line: bool, quantity: float, method: str,
         scores = score(scanned, scanned['peak_time'])
     except ZeroDivisionError:
         scores = score(scanned)
-    return gen_df(scanned, [('intensity', scores)])
+    return FeatureSet(gen_df(scanned, [('intensity', scores)]))
 
 
 # merge all the result files of single tasks in the target folder
-def merge_result(tbs: Sequence[pd.DataFrame], names: List[str]) -> pd.DataFrame:
+def merge_result(tbs: Sequence[FeatureSet], names: List[str]) -> Sample:
     """
     Merge the feature tables of multiple mzML files.
     :param tbs:  Feature tables
     :param names:  Names of the mzML files
     :return:  Merged feature table
     """
-    sub_results = [dict(zip(tb.index, tb['intensity'])) for tb in tbs]
+    sub_results = [dict(zip(tb.mz, tb.intensity)) for tb in tbs]
     result = cluster_merge(sub_results)
-    return pd.DataFrame(data=list(result.values()), index=list(result.keys()), columns=names)
+    return Sample(pd.DataFrame(data=list(result.values()), index=list(result.keys()), columns=names))
 
 
-def time_align(tbs: Sequence[pd.DataFrame]) -> Sequence[pd.DataFrame]:
+def time_align(tbs: Sequence[FeatureSet]) -> Sequence[FeatureSet]:
     """
     Align the time of multiple feature tables.
     :param tbs:  Feature tables
@@ -49,5 +50,5 @@ def time_align(tbs: Sequence[pd.DataFrame]) -> Sequence[pd.DataFrame]:
     """
     if len(tbs) == 1:
         return tbs
-    common_time = time_union(tbs)
-    return [interpolate_time(tb, common_time) for tb in tbs]
+    common_time = time_union([tb.table for tb in tbs])
+    return [FeatureSet(interpolate_time(tb.table, common_time)) for tb in tbs]

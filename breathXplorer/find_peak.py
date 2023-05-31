@@ -142,7 +142,7 @@ def find_gaussian(x: np.ndarray, y: np.ndarray, n: int) -> list:
     :param x: An array of time points.
     :param y: An array of corresponding values (e.g. concentration or intensity).
     :param n: The number of peaks to consider.
-    :return: A list of tuples containing the start and end x values of the ranges, and the y values at the peaks.
+    :return: A list of tuples containing the start and end x values of the ranges.
     """
     ny = y.copy()
     ny -= ny.min()

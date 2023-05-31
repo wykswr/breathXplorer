@@ -1,5 +1,6 @@
 from functools import reduce
-from typing import Tuple, List
+from pathlib import Path
+from typing import Tuple, List, Union
 
 import numpy as np
 import pandas as pd
@@ -7,6 +8,7 @@ from pyteomics import mzml
 from scipy import signal, sparse
 
 from .cluster import cluster_mz, __drop_zero_near
+from .container import FeatureSet, TandemMS
 from .find_peak import time_with_peak
 
 
@@ -87,7 +89,7 @@ def read_sparse(file: str, line: bool) -> pd.DataFrame:
 def cluster_ms(ms: str, line: bool, dense: float, method: str, n_peak=1) -> dict:
     """
     Find all bars in the time to m/z heatmap.:param ms: mzML file path
-    :param line: Whether the mzML file is a line spectra file
+    :param line: Whether the mzML file is a line spectra mzML
     :param dense: Control the quality of peak
     :param method: Peak picking method
     :param n_peak: Number of peaks
@@ -123,3 +125,19 @@ def gen_df(scanned_file: dict, new_inf: List[Tuple]) -> pd.DataFrame:
         ntb = pd.DataFrame({name: list(ndc.values())}, index=list(ndc.keys()))
         otb = pd.concat([ntb, otb], axis='columns', ignore_index=False)
     return otb
+
+
+def retrieve_tandem(file: Union[str, Path], feature: FeatureSet, radium: float) -> TandemMS:
+    """
+    Retrieve tandem MS information from an zML mzML.
+
+    :param file: mzML file path
+    :param feature: result FeatureSet
+    :param radium: Radium of the feature
+    :return: TandemMS object
+    """
+    file = Path(file)
+    tandem = TandemMS(feature.mz)
+    with mzml.read(str(file.absolute())) as handle:
+        tandem.build(handle, radium)
+    return tandem
