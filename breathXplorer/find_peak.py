@@ -125,7 +125,8 @@ def find_peak(x: np.ndarray, y: np.ndarray) -> list:
 
     :param x: An array of time points.
     :param y: An array of corresponding values (e.g. concentration or intensity).
-    :return: A list of tuples containing the start and end x values of the ranges, and the y values at the peaks.
+    :return: A list of tuples containing the start and end time point values of the ranges, and the maximum
+     intensity values of the peaks.
     """
     f = interpolate.interp1d(x, y, kind='cubic')
     n_x = np.union1d(np.linspace(np.min(x), np.max(x), max(1000, len(x))), x)  # can influence effect of finding range
@@ -142,7 +143,8 @@ def find_gaussian(x: np.ndarray, y: np.ndarray, n: int) -> list:
     :param x: An array of time points.
     :param y: An array of corresponding values (e.g. concentration or intensity).
     :param n: The number of peaks to consider.
-    :return: A list of tuples containing the start and end x values of the ranges.
+    :return: A list of tuples containing the start and end time point values of the ranges, and the maximum
+        intensity values of the peaks.
     """
     ny = y.copy()
     ny -= ny.min()
