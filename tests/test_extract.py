@@ -3,7 +3,7 @@ from pathlib import Path
 
 sys.path.append(Path(__file__).parent.parent.as_posix())
 
-from breathXplorer import find_feature, merge_result, time_align
+from breathXplorer import find_feature, merge_result
 
 
 def test_cal_one(sample):
