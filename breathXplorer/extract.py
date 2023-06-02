@@ -12,7 +12,7 @@ from .utils import score, time_union, interpolate_time
 # a single task
 def find_feature(ms: Union[Path, str], line: bool, quantity: float, method: str, n_peak: int = 1) -> FeatureSet:
     """
-    Calculate the feature table of a single mzML file.
+    Calculate the feature table of a single MS file (mzML or mzXML).
     :param ms:  Path of the mzML file.
     :param line:  Whether to use line mode.
     :param quantity: control the quality of peak
@@ -32,7 +32,7 @@ def find_feature(ms: Union[Path, str], line: bool, quantity: float, method: str,
 # merge all the result files of single tasks in the target folder
 def merge_result(tbs: Sequence[FeatureSet], names: List[str]) -> Sample:
     """
-    Merge the feature tables of multiple mzML files.
+    Merge the feature tables of multiple MS files (mzML or mzXML).
     :param tbs:  Feature tables
     :param names:  Names of the mzML files
     :return:  Merged feature table

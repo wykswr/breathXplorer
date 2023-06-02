@@ -1,8 +1,114 @@
+from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Iterator, Union
 
 import numpy as np
 import pandas as pd
+from pyteomics import mzml, mzxml
+
+
+class Spectra(ABC):
+    def __init__(self, sp):
+        self.sp = sp
+
+    @property
+    @abstractmethod
+    def mz(self) -> np.ndarray:
+        pass
+
+    @property
+    @abstractmethod
+    def intensity(self) -> np.ndarray:
+        pass
+
+    @property
+    @abstractmethod
+    def level(self) -> int:
+        pass
+
+    @property
+    @abstractmethod
+    def tic(self) -> float:
+        pass
+
+    @property
+    @abstractmethod
+    def scan_start_time(self) -> float:
+        pass
+
+    @property
+    @abstractmethod
+    def precursor(self) -> float:
+        pass
+
+
+class MzmlSpectra(Spectra):
+    @property
+    def mz(self):
+        return self.sp['m/z array']
+
+    @property
+    def intensity(self):
+        return self.sp['intensity array']
+
+    @property
+    def level(self):
+        return self.sp['ms level']
+
+    @property
+    def tic(self):
+        return self.sp['total ion current']
+
+    @property
+    def scan_start_time(self):
+        return self.sp['scanList']['scan'][0]['scan start time']
+
+    @property
+    def precursor(self):
+        return self.sp['precursorList']['precursor'][0]['selectedIonList']['selectedIon'][0]['selected ion m/z']
+
+
+class MzxmlSpectra(Spectra):
+    @property
+    def mz(self):
+        return self.sp["m/z array"]
+
+    @property
+    def intensity(self):
+        return self.sp["intensity array"]
+
+    @property
+    def level(self):
+        return self.sp["msLevel"]
+
+    @property
+    def tic(self):
+        return self.sp["totIonCurrent"]
+
+    @property
+    def scan_start_time(self):
+        return self.sp["retentionTime"]
+
+    @property
+    def precursor(self):
+        return self.sp["precursorMz"][0]["precursorMz"]
+
+
+class Source:
+    def __init__(self, file: Union[str, Path]):
+        self.file = Path(file)
+
+    def __iter__(self) -> Iterator[Spectra]:
+        if self.file.suffix == '.mzML':
+            with mzml.read(str(self.file.absolute())) as handle:
+                for sp in handle:
+                    yield MzmlSpectra(sp)
+        elif self.file.suffix == '.mzXML':
+            with mzxml.read(str(self.file.absolute())) as handle:
+                for sp in handle:
+                    yield MzxmlSpectra(sp)
+        else:
+            raise ValueError('Unsupported file format')
 
 
 class Container:
@@ -59,24 +165,23 @@ class TandemMS:
     def __init__(self, feature):
         self.feature = feature
 
-    def build(self, mzML: Iterator, radium: float):
+    def build(self, source: Source, radium: float):
         """
         Build the tandem MS spectra using the feature list.
-        :param mzML: Iterator of mzML file
+        :param source: source of the MS data
         :param radium: tolerance of the mz
         :return: None
         """
         self.spectra = dict()
         if self.feature.size == 0:
             raise ValueError('Empty feature')
-        for sp in mzML:
-            if sp['ms level'] != 2:
+        for sp in source:
+            if sp.level != 2:
                 continue
-            pm = sp['precursorList']['precursor'][0]['selectedIonList']['selectedIon'][0]['selected ion m/z']
-            indicator = np.abs(self.feature - pm) < radium
+            indicator = np.abs(self.feature - sp.precursor) < radium
             if indicator.sum() == 0:
                 continue
-            self.spectra[pm] = sp
+            self.spectra[sp.precursor] = sp
         self.spectra = dict(sorted(self.spectra.items(), key=lambda x: x[0]))
 
     @staticmethod
@@ -84,7 +189,6 @@ class TandemMS:
         return 'BEGIN IONS\n' + \
             f'PEPMASS={precursor}\n' + \
             'MSLEVEL=2\n' + \
-            'CHARGE=1+\n' + \
             "\n".join([f"{mz[i]} {intensity[i]}" for i in range(mz.size) if intensity[i] > 0.001]) + \
             '\nEND IONS\n\n'
 
@@ -96,5 +200,4 @@ class TandemMS:
         """
         with open(file, 'w') as handle:
             for pm, sp in self.spectra.items():
-                mz, intensity = sp['m/z array'], sp['intensity array']
-                handle.write(self.__translate(mz, intensity, pm))
+                handle.write(self.__translate(sp.mz, sp.intensity, pm))
