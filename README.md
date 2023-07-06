@@ -23,7 +23,7 @@
 
 ## Introduction
 
-BreathXplorer is a bioinformatic solution to processing breath data generated from HRMS analysis. It contains a suite of functions, including
+BreathXplorer is a bioinformatic solution to process breath data generated from HRMS analysis. It contains a suite of functions, including
 feature extraction, feature alignment, and breath recognition.
 
 ## Quick start
