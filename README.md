@@ -23,7 +23,7 @@
 
 ## Introduction
 
-BreathXplorer is a swiss army knife for breath analysis. It provides a set of tools for breath analysis, including
+BreathXplorer is a bioinformatic solution to processing breath data generated from HRMS analysis. It contains a suite of functions, including
 feature extraction, feature alignment, and breath recognition.
 
 ## Quick start
