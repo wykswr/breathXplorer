@@ -46,23 +46,23 @@ The related MS/MS spectra can be exported in an mgf file.
 
 #### Feature table CSV
 
-|         | intensity    | 0.0072     | 0.0267     | 0.0438    |
-|---------|--------------|------------|------------|-----------|
-| 70.0043 | 42831.9285   | 90863.2343 | 34955.3671 | 0.0       |
-| 70.0650 | 7697202.3552 | 6714245.5  | 6476909.5  | 6479075.5 |
-| 70.0730 | 18459.3173   | 0.0        | 0.0        | 0.0       |
-| 70.1257 | 65085.3566   | 0.3312     | 0.3484     | 0.3657    |
+| ID | Feature m/z | intensity | 0.0072  | 0.0267  | 0.0438  |
+|----|-------------|-----------|---------|---------|---------|
+| 0  | 70.0043     | 42831     | 90863   | 34955   | 0       |
+| 1  | 70.0650     | 7697202   | 6714245 | 6476909 | 6479075 |
+| 2  | 70.0730     | 18459     | 0       | 0       | 0       |
+| 3  | 70.1257     | 65085     | 0       | 0       | 0       |
 
 The index of the table is the m/z value of the features, and the 1st column is the total intensity of the feature.
 The other columns are the intensity of the feature over time, the time is the name of the corresponding column.
 
 #### Aligned feature table CSV
 
-|         | S01_Before   | S02_Before   | S03_Before   |
-|---------|--------------|--------------|--------------|
-| 70.0652 | 8400258.4550 | 3229242.0293 | 8472742.4975 |
-| 71.0489 | 449896.5219  | 11058.40230  | 413906.9662  |
-| 71.0683 | 386030.8760  | 12110.0360   | 398033.1097  |
+| ID | Feature m/z | S01_Before | S02_Before | S03_Before |
+|----|-------------|------------|------------|------------|
+| 0  | 70.0652     | 8400258    | 3229242    | 8472742    |
+| 1  | 71.0489     | 449896     | 11058      | 413906     |
+| 2  | 71.0683     | 386030     | 12110      | 398033     |
 
 The index of the table is the m/z value of the features, and each column is the total intensity of the feature in a
 sample (
@@ -74,16 +74,16 @@ experiment of a subject). The name of the column is the sample name.
 BEGIN IONS
 PEPMASS=70.0040
 MSLEVEL=2
-50.6306 1466.3514
-50.6316 2041.7808
+50.6306 1466
+50.6316 2041
 END IONS
 
 BEGIN IONS
 PEPMASS=70.0649
 MSLEVEL=2
-53.0012 1509.3829
-71.0627 7731.6875
-71.0650 870.4231
+53.0012 1509
+71.0627 7731
+71.0650 870
 END IONS
 ```
 
