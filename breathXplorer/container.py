@@ -133,7 +133,7 @@ class Container:
         features = self.data.index.values.astype(float)
         features = np.round(features, 4)
         self.data.insert(0, 'm/z', features)
-        self.data.insert(0, 'index', np.arange(self.data.shape[0]))
+        self.data.insert(0, 'ID', np.arange(self.data.shape[0]))
         self.data.to_csv(file, index=False)
 
 
