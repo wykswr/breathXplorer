@@ -46,23 +46,23 @@ The related MS/MS spectra can be exported in an mgf file.
 
 #### Feature table CSV
 
-| ID | Feature m/z | intensity | 0.0072  | 0.0267  | 0.0438  |
-|----|-------------|-----------|---------|---------|---------|
-| 0  | 70.0043     | 42831     | 90863   | 34955   | 0       |
-| 1  | 70.0650     | 7697202   | 6714245 | 6476909 | 6479075 |
-| 2  | 70.0730     | 18459     | 0       | 0       | 0       |
-| 3  | 70.1257     | 65085     | 0       | 0       | 0       |
+| ID | m/z     | intensity | 0.0072  | 0.0267  | 0.0438  |
+|----|---------|-----------|---------|---------|---------|
+| 0  | 70.0043 | 42831     | 90863   | 34955   | 0       |
+| 1  | 70.0650 | 7697202   | 6714245 | 6476909 | 6479075 |
+| 2  | 70.0730 | 18459     | 0       | 0       | 0       |
+| 3  | 70.1257 | 65085     | 0       | 0       | 0       |
 
 The index of the table is the m/z value of the features, and the 1st column is the total intensity of the feature.
 The other columns are the intensity of the feature over time, the time is the name of the corresponding column.
 
 #### Aligned feature table CSV
 
-| ID | Feature m/z | S01_Before | S02_Before | S03_Before |
-|----|-------------|------------|------------|------------|
-| 0  | 70.0652     | 8400258    | 3229242    | 8472742    |
-| 1  | 71.0489     | 449896     | 11058      | 413906     |
-| 2  | 71.0683     | 386030     | 12110      | 398033     |
+| ID | m/z     | S01_Before | S02_Before | S03_Before |
+|----|---------|------------|------------|------------|
+| 0  | 70.0652 | 8400258    | 3229242    | 8472742    |
+| 1  | 71.0489 | 449896     | 11058      | 413906     |
+| 2  | 71.0683 | 386030     | 12110      | 398033     |
 
 The index of the table is the m/z value of the features, and each column is the total intensity of the feature in a
 sample (
