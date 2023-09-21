@@ -129,7 +129,12 @@ class Container:
         return self.data.shape[0]
 
     def to_csv(self, file: Union[str, Path]):
-        self.data.to_csv(file)
+        self.data = self.data.applymap(lambda x: np.round(x, 0))
+        features = self.data.index.values.astype(float)
+        features = np.round(features, 4)
+        self.data.insert(0, 'm/z', features)
+        self.data.insert(0, 'index', np.arange(self.data.shape[0]))
+        self.data.to_csv(file, index=False)
 
 
 class FeatureSet(Container):
