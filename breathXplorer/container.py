@@ -5,6 +5,7 @@ from typing import Iterator, Union
 import numpy as np
 import pandas as pd
 from pyteomics import mzml, mzxml
+from .utils import annotate_adduct
 
 
 class Spectra(ABC):
@@ -118,39 +119,47 @@ class Container:
         self.data = data
 
     @property
-    def table(self):
+    def table(self) -> pd.DataFrame:
         return self.data
 
     @property
-    def mz(self):
+    def mz(self) -> np.ndarray:
         return self.data.index.values.astype(float)
 
     def __len__(self):
         return self.data.shape[0]
 
-    def to_csv(self, file: Union[str, Path]):
-        self.data = self.data.applymap(lambda x: np.round(x, 0))
-        features = self.data.index.values.astype(float)
+    def to_csv(self, file: Union[str, Path], adduct: bool = False):
+        # deep copy
+        data = self.data.copy()
+        data = data.applymap(lambda x: np.round(x, 0))
+        features = data.index.values.astype(float)
         features = np.round(features, 4)
-        self.data.insert(0, 'm/z', features)
-        self.data.insert(0, 'ID', np.arange(self.data.shape[0]))
-        self.data.to_csv(file, index=False)
+        data.insert(0, 'm/z', features)
+        data.insert(0, 'ID', np.arange(data.shape[0]))
+        if adduct:
+            data.insert(1, 'adduct', annotate_adduct(features))
+        data.to_csv(file, index=False)
 
 
 class FeatureSet(Container):
     @property
-    def scan_time(self):
+    def scan_time(self) -> np.ndarray:
         """
         Get the scan time of the feature set.
         :return: scan time
         """
         return self.data.columns[1:].values.astype(float)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: float) -> np.ndarray:
         return self.data.loc[key, 1:].values.astype(float)
 
     @property
-    def intensity(self):
+    def rsd(self) -> pd.Series:
+        return self.data.iloc[:, 1:].apply(lambda x: np.std(x) / np.mean(x), axis=1)
+
+    @property
+    def intensity(self) -> np.ndarray:
         return self.data['intensity'].values.astype(float)
 
 
@@ -159,7 +168,7 @@ class Sample(Container):
     def sample_name(self):
         return self.data.columns
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: float):
         return self.data.loc[key, :].values.astype(float)
 
 
