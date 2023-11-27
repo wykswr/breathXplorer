@@ -116,6 +116,7 @@ fs.scan_time  # scan time of the experiment
 fs.intensity  # the total intensity of each feature (calculated by integrating the intensity over scan time)
 len(fs)  # the number of extracted features
 fs[96.7654]  # get the intensity with m/z value 96.7654 over scan time
+fs.rsd  # the relative standard deviation of each feature for quality control
 ```
 
 FeatureSet object can be exported as csv file using the `to_csv` method:
@@ -123,6 +124,13 @@ FeatureSet object can be exported as csv file using the `to_csv` method:
 ```python
 fs.to_csv("feature_table.csv")
 ```
+
+BreathXplorer can infer the adducts of the features, to enable this function:
+
+```python
+fs.to_csv("feature_table.csv", adduct=True)
+```
+
 
 ### Feature alignment
 
@@ -153,6 +161,7 @@ sample.sample_name  # the name of each sample
 len(sample)  # the number of extracted features
 sample[96.7654]  # get the total intensity with m/z value 96.7654 of all samples
 sample.to_csv("aligned_table.csv")  # export the feature table of all samples as csv file
+sample.to_csv("aligned_table.csv", adduct=True)  # export the feature table of all samples as csv file with adducts
 ```
 
 ## Utilities
