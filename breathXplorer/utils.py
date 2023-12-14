@@ -83,10 +83,11 @@ _adducts = {
     'M+H': 1.007276,
     'M+H-H2O': -17.00384,
     'M+H+H2O': 19.01839,
+    'M+Na': 23.98922,
 }
 
 
-def annotate_adduct(mz_values: np.ndarray, thres: float = 0.1) -> np.ndarray:
+def annotate_adduct(mz_values: np.ndarray, thres: float) -> np.ndarray:
     """
     Annotate adducts for a feature table.
 
@@ -125,7 +126,7 @@ _isotopes = {
 }
 
 
-def annotate_isotope(mz_values: np.ndarray, thres: float = 0.1) -> np.ndarray:
+def annotate_isotope(mz_values: np.ndarray, thres: float) -> np.ndarray:
     """
     Annotate isotopes for a feature table.
 

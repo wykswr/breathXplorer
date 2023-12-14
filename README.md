@@ -122,7 +122,8 @@ fs.rsd  # the relative standard deviation of each feature for quality control
 In practice, the relative standard deviation (RSD) can be used to filter out the noise which doesn't have a consistent intensity with breath peaks:
 
 ```python
-fs = fs.rsd_control(.1)
+fs = fs.rsd_control(.1)  # use specific RSD value
+fs = fs.rsd_control(fs.rsd.quantile(0.1))  # use the 10% quantile of the RSD
 ```
 
 FeatureSet object can be exported as csv file using the `to_csv` method:
@@ -148,7 +149,7 @@ sample. To use the function, you can do the following:
 from breathXplorer import merge_result, find_feature
 
 fss = [find_feature(f, False, .8, "Gaussian", 6) for f in ["sample1.mzML", "sample2.mzXML", "sample3.mzML"]]
-fss = [fs.rsd_control(.1) for fs in fss]  # filter out the noise (optional)
+fss = [fs.rsd_control(fs.rsd.quantile(0.1)) for fs in fss]  # filter out the noise (optional)
 sample = merge_result(fss, ["sample1", "sample2", "sample3"])
 ```
 
