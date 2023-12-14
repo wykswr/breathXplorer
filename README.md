@@ -119,16 +119,22 @@ fs[96.7654]  # get the intensity with m/z value 96.7654 over scan time
 fs.rsd  # the relative standard deviation of each feature for quality control
 ```
 
+In practice, the relative standard deviation (RSD) can be used to filter out the noise which doesn't have a consistent intensity with breath peaks:
+
+```python
+fs = fs.rsd_control(.1)
+```
+
 FeatureSet object can be exported as csv file using the `to_csv` method:
 
 ```python
 fs.to_csv("feature_table.csv")
 ```
 
-BreathXplorer can infer the adducts of the features, to enable this function:
+BreathXplorer can infer the adducts and isotope of the features, to enable this function:
 
 ```python
-fs.to_csv("feature_table.csv", adduct=True)
+fs.to_csv("feature_table.csv", adduct=True, isotope=True)
 ```
 
 
@@ -142,6 +148,7 @@ sample. To use the function, you can do the following:
 from breathXplorer import merge_result, find_feature
 
 fss = [find_feature(f, False, .8, "Gaussian", 6) for f in ["sample1.mzML", "sample2.mzXML", "sample3.mzML"]]
+fss = [fs.rsd_control(.1) for fs in fss]  # filter out the noise (optional)
 sample = merge_result(fss, ["sample1", "sample2", "sample3"])
 ```
 
