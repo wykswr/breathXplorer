@@ -5,7 +5,8 @@ from typing import Iterator, Union
 import numpy as np
 import pandas as pd
 from pyteomics import mzml, mzxml
-from .utils import annotate_adduct
+
+from .utils import annotate_adduct, annotate_isotope
 
 
 class Spectra(ABC):
@@ -129,7 +130,7 @@ class Container:
     def __len__(self):
         return self.data.shape[0]
 
-    def to_csv(self, file: Union[str, Path], adduct: bool = False):
+    def to_csv(self, file: Union[str, Path], adduct: bool = False, isotope: bool = False):
         # deep copy
         data = self.data.copy()
         data = data.applymap(lambda x: np.round(x, 0))
@@ -139,6 +140,8 @@ class Container:
         data.insert(0, 'ID', np.arange(data.shape[0]))
         if adduct:
             data.insert(1, 'adduct', annotate_adduct(features))
+        if isotope:
+            data.insert(1, 'isotope', annotate_isotope(features))
         data.to_csv(file, index=False)
 
 
@@ -161,6 +164,14 @@ class FeatureSet(Container):
     @property
     def intensity(self) -> np.ndarray:
         return self.data['intensity'].values.astype(float)
+
+    def rsd_control(self, threshold: float) -> 'FeatureSet':
+        """
+        Filter the feature set by RSD.
+        :param threshold: threshold of RSD
+        :return: filtered feature set
+        """
+        return FeatureSet(self.data[self.rsd > threshold])
 
 
 class Sample(Container):

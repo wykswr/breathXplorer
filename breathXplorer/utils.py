@@ -94,8 +94,10 @@ def annotate_adduct(mz_values: np.ndarray, thres: float = 0.1) -> np.ndarray:
     :param thres: Threshold for m/z difference.
     :return: Tuple of adducts and their parent ion m/z's indices.
     """
+
     def describe(adduct: str, idx: int) -> str:
         return f'{adduct} of m/z:{round(mz_values[idx], 4)}' if idx != -1 else 'unknown adduct'
+
     adducts = np.array(['unknown adduct' for _ in range(mz_values.size)])
     parent = np.ones(shape=(mz_values.size,), dtype=int) * -1
 
@@ -117,7 +119,41 @@ def annotate_adduct(mz_values: np.ndarray, thres: float = 0.1) -> np.ndarray:
     return np.array([describe(adduct, idx) for adduct, idx in zip(adducts, parent)])
 
 
-if __name__ == '__main__':
-    mzs = np.array([1, 3, 5, 7, 9, 5+19.01, 13, 15, 17])
-    adducts = annotate_adduct(mzs)
-    print(adducts)
+_isotopes = {
+    'M+1': 1.00335,
+    'M+2': 2.00671,
+}
+
+
+def annotate_isotope(mz_values: np.ndarray, thres: float = 0.1) -> np.ndarray:
+    """
+    Annotate isotopes for a feature table.
+
+    :param mz_values: m/z values.
+    :param thres: Threshold for m/z difference.
+    :return: Tuple of isotopes ion m/z's indices.
+    """
+
+    def describe(isotope: str, idx: int) -> str:
+        return f'{isotope} of m/z:{round(mz_values[idx], 4)}' if idx != -1 else 'unknown isotope'
+
+    isotopes = np.array(['unknown isotope' for _ in range(mz_values.size)])
+    parent = np.ones(shape=(mz_values.size,), dtype=int) * -1
+
+    # compare the pair of m/z values to see if they are close enough based on the isotopes
+
+    for i in range(mz_values.size):
+        if parent[i] != -1:
+            continue
+        for j in range(i + 1, len(mz_values)):
+            if parent[j] != -1:
+                continue
+            mz_i = mz_values[i]
+            mz_j = mz_values[j]
+            for isotope, mass in _isotopes.items():
+                if abs(mz_j - mz_i - mass) < thres:
+                    isotopes[j] = isotope
+                    parent[j] = i
+                    break
+
+    return np.array([describe(isotope, idx) for isotope, idx in zip(isotopes, parent)])
