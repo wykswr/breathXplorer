@@ -139,9 +139,9 @@ class Container:
         data.insert(0, 'm/z', features)
         data.insert(0, 'ID', np.arange(data.shape[0]))
         if adduct:
-            data.insert(1, 'adduct', annotate_adduct(features))
+            data.insert(1, 'adduct', annotate_adduct(features, .001))
         if isotope:
-            data.insert(1, 'isotope', annotate_isotope(features))
+            data.insert(1, 'isotope', annotate_isotope(features, .001))
         data.to_csv(file, index=False)
 
 
