@@ -139,9 +139,9 @@ class Container:
         data.insert(0, 'm/z', features)
         data.insert(0, 'ID', np.arange(data.shape[0]))
         if adduct:
-            data.insert(1, 'adduct', annotate_adduct(features, .001))
+            data.insert(1, 'adduct', annotate_adduct(features, 5e-4))
         if isotope:
-            data.insert(1, 'isotope', annotate_isotope(features, .001))
+            data.insert(1, 'isotope', annotate_isotope(features, 5e-4))
         data.to_csv(file, index=False)
 
 
@@ -212,9 +212,9 @@ class TandemMS:
     @staticmethod
     def __translate(mz: np.ndarray, intensity: np.ndarray, precursor: float) -> str:
         return 'BEGIN IONS\n' + \
-            f'PEPMASS={precursor}\n' + \
+            f'PEPMASS={round(precursor, 4)}\n' + \
             'MSLEVEL=2\n' + \
-            "\n".join([f"{mz[i]} {intensity[i]}" for i in range(mz.size) if intensity[i] > 0.001]) + \
+            "\n".join([f"{round(mz[i], 4)} {round(intensity[i], 2)}" for i in range(mz.size) if intensity[i] > 0.001]) + \
             '\nEND IONS\n\n'
 
     def to_mgf(self, file: Union[str, Path]):

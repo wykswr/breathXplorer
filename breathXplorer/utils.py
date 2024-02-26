@@ -17,6 +17,7 @@ def cal_auc(x: np.ndarray, y: np.ndarray) -> float:
     f = interp1d(x, y, kind='cubic')
     nx = np.union1d(np.linspace(np.min(x), np.max(x), max(800, len(x))), x)
     ny = f(nx)
+    ny[ny < 0] = 0
     return np.trapz(ny, nx)
 
 
@@ -81,7 +82,6 @@ def time_union(tbs: Sequence[pd.DataFrame]) -> np.ndarray:
 
 _adducts = {
     'M+H': 1.007276,
-    'M+H-H2O': -17.00384,
     'M+H+H2O': 19.01839,
     'M+Na': 23.98922,
 }
