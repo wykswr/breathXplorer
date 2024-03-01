@@ -80,10 +80,17 @@ def time_union(tbs: Sequence[pd.DataFrame]) -> np.ndarray:
     return reduce(lambda x, y: np.union1d(x, y), [tb.columns[1:].values.astype(float) for tb in tbs])
 
 
+_adduct_mass = {
+    'M+H': 1.007276452,
+    'M+H-H2O': -17.003288232,
+    'M+Na': 22.9892207,
+    'M+NH4': 18.033825548,
+}
+
 _adducts = {
-    'M+H': 1.007276,
-    'M+H+H2O': 19.01839,
-    'M+Na': 23.98922,
+    '[M+H-H2O]+': _adduct_mass['M+H-H2O'] - _adduct_mass['M+H'],
+    '[M+Na]+': _adduct_mass['M+Na'] - _adduct_mass['M+H'],
+    '[M+NH4]+': _adduct_mass['M+NH4'] - _adduct_mass['M+H'],
 }
 
 
@@ -96,10 +103,7 @@ def annotate_adduct(mz_values: np.ndarray, thres: float) -> np.ndarray:
     :return: Tuple of adducts and their parent ion m/z's indices.
     """
 
-    def describe(adduct: str, idx: int) -> str:
-        return f'{adduct} of m/z:{round(mz_values[idx], 4)}' if idx != -1 else 'unknown adduct'
-
-    adducts = np.array(['unknown adduct' for _ in range(mz_values.size)])
+    adducts = ['[M+H]+' for _ in range(mz_values.size)]
     parent = np.ones(shape=(mz_values.size,), dtype=int) * -1
 
     # compare the pair of m/z values to see if they are close enough based on the adducts
@@ -117,7 +121,7 @@ def annotate_adduct(mz_values: np.ndarray, thres: float) -> np.ndarray:
                     parent[j] = i
                     break
 
-    return np.array([describe(adduct, idx) for adduct, idx in zip(adducts, parent)])
+    return np.array(adducts)
 
 
 _isotopes = {
@@ -135,10 +139,7 @@ def annotate_isotope(mz_values: np.ndarray, thres: float) -> np.ndarray:
     :return: Tuple of isotopes ion m/z's indices.
     """
 
-    def describe(isotope: str, idx: int) -> str:
-        return f'{isotope} of m/z:{round(mz_values[idx], 4)}' if idx != -1 else 'unknown isotope'
-
-    isotopes = np.array(['unknown isotope' for _ in range(mz_values.size)])
+    isotopes = ['M' for _ in range(mz_values.size)]
     parent = np.ones(shape=(mz_values.size,), dtype=int) * -1
 
     # compare the pair of m/z values to see if they are close enough based on the isotopes
@@ -157,4 +158,4 @@ def annotate_isotope(mz_values: np.ndarray, thres: float) -> np.ndarray:
                     parent[j] = i
                     break
 
-    return np.array([describe(isotope, idx) for isotope, idx in zip(isotopes, parent)])
+    return np.array(isotopes)
