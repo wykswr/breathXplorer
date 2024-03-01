@@ -5,7 +5,7 @@ with open("requirement.txt") as f:
 
 setup(
     name="breathXplorer",
-    version="0.2.3",
+    version="0.2.4",
     packages=find_packages(),
     install_requires=required_packages,
     author="wykswr",

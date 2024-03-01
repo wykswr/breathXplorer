@@ -103,7 +103,7 @@ def annotate_adduct(mz_values: np.ndarray, thres: float) -> np.ndarray:
     :return: Tuple of adducts and their parent ion m/z's indices.
     """
 
-    adducts = np.array(['[M+H]+' for _ in range(mz_values.size)])
+    adducts = ['[M+H]+' for _ in range(mz_values.size)]
     parent = np.ones(shape=(mz_values.size,), dtype=int) * -1
 
     # compare the pair of m/z values to see if they are close enough based on the adducts
@@ -139,7 +139,7 @@ def annotate_isotope(mz_values: np.ndarray, thres: float) -> np.ndarray:
     :return: Tuple of isotopes ion m/z's indices.
     """
 
-    isotopes = np.array(['M' for _ in range(mz_values.size)])
+    isotopes = ['M' for _ in range(mz_values.size)]
     parent = np.ones(shape=(mz_values.size,), dtype=int) * -1
 
     # compare the pair of m/z values to see if they are close enough based on the isotopes
