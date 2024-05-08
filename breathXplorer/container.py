@@ -173,6 +173,14 @@ class FeatureSet(Container):
         """
         return FeatureSet(self.data[self.rsd > threshold])
 
+    def intensity_control(self, threshold: float = .01) -> 'FeatureSet':
+        """
+        Filter the feature set by intensity.
+        :param threshold: threshold of intensity
+        :return: filtered feature set
+        """
+        return FeatureSet(self.data[self.intensity > threshold * self.intensity.mean()])
+
 
 class Sample(Container):
     @property
